@@ -71,6 +71,10 @@ export class TransactionPage extends React.Component {
     });
   }
 
+  /**
+   * Switches the currency and filters transactions based on it. Then updates the view data.
+   * @param {*} currency 
+   */
   switchCurrency(currency){
     // Filter the visible transactions to the selected currency
     let viewTransactions = [];
@@ -92,9 +96,9 @@ export class TransactionPage extends React.Component {
     try{
       // Map arrays to objects because it's easier to do lookups
       const [ users, merchants, transactions] = await Promise.all([
-        getUsers().then((a) => new Promise((resolve)=> resolve(this.arrayToObject(a,'cardId')))), 
-        getMerchants().then((a) => new Promise((resolve)=> resolve(this.arrayToObject(a,'networkId')))), 
-        getTransactions().then((a) => new Promise((resolve)=> resolve(this.arrayToObject(a,'id')))), 
+        getUsers().then((a) => this.arrayToObject(a,'cardId')), 
+        getMerchants().then((a) => this.arrayToObject(a,'networkId')), 
+        getTransactions().then((a) => this.arrayToObject(a,'id')), 
       ]);
       
       this.setState({
@@ -108,7 +112,13 @@ export class TransactionPage extends React.Component {
     }
   }
 
-  arrayToObject(array, objectKeyProperty){
+  /**
+   * Convert array of objects to object mapping to the elements based on a given object key.
+   * @param {*} array 
+   * @param {*} objectKeyProperty 
+   * @returns {*}
+   */
+  async arrayToObject(array, objectKeyProperty){
     return array.reduce((object, element)=> { 
       object[element[objectKeyProperty]] = element;
       return object;
